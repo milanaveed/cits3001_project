@@ -32,7 +32,6 @@ def main():
         total_reward += reward
     
         print("Total reward:", total_reward)
-        print(obs)
     
 if __name__ == "__main__":
     main()
