@@ -18,6 +18,8 @@ Apparently David suggested that when we do `env = gym.make('SuperMarioBros-v0', 
 
 Using `v3` means it is easier to get it working, but this would result in less marks. I asked and they said that getting the code to run in `v0` gets you bonus marks. They haven't disclosed how many marks that is yet.
 
+Bonuse marks will also be awarded if Mario can traverse multiple levels.
+
 ![Image](https://user-images.githubusercontent.com/2184469/40948817-3cd6600a-6830-11e8-8abb-9cee6a31d377.png)
 
 ## More sources to read into
