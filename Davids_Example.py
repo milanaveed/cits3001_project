@@ -1,3 +1,4 @@
+#Mario doesn't know what a Goomba is yet
 import gym
 import numpy as np
 import gym_super_mario_bros
