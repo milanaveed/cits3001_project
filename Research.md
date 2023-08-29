@@ -16,6 +16,8 @@ As per [Link](https://gymnasium.farama.org/api/env/#gymnasium.Env.step) it appea
 Not yet sure how to use this data, but it seems like this is the right way to do it, as Lauren (Tuesday Lab Instructor) said that the way Mario recognises enemies is through these observations and the pixels that make up these enemies.
 Apparently David suggested that when we do `env = gym.make('SuperMarioBros-v0', apply_api_compatibility=True, render_mode="human")` we could use `'SuperMarioBros-v3'` which displays everything as single pixels, making it easier to understand?
 
+Using `v3` means it is easier to get it working, but this would result in less marks. I asked and they said that getting the code to run in `v0` gets you bonus marks. They haven't disclosed how many marks that is yet.
+
 ![Image](https://user-images.githubusercontent.com/2184469/40948817-3cd6600a-6830-11e8-8abb-9cee6a31d377.png)
 
 ## More sources to read into
