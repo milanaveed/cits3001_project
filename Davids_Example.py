@@ -32,6 +32,10 @@ def main():
         total_reward += reward
     
         print("Total reward:", total_reward)
+        print(obs.shape)
+        print(obs.dtype.metadata)
+        print(obs.strides)
+        print("---------")
     
 if __name__ == "__main__":
     main()
