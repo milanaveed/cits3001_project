@@ -17,7 +17,7 @@ The test code worked, but I did notice that in the code given, on line 5, it sho
 
 Another thing I noticed was that the gaem was running abnormally fast in comparison with David's example in the Tutorial where he showed us. There might be something wrong with the emulator speed (I've asked about this in help3001 [here](https://secure.csse.uwa.edu.au/run/help3001?p=np&opt=B73&year=2023).
 
-### For Mac OS
+# For Mac OS
 ## Installation and Running with the Correct Python Interpreter
 Create the environment in Anaconda by choosing python 3.7.16, and launch VS code from Anaconda.
 - `conda activate mario`
