@@ -28,3 +28,7 @@ Bonuse marks will also be awarded if Mario can traverse multiple levels.
 [Gymnasium.vector.VectorEnv](https://gymnasium.farama.org/api/vector/#observation_space)
 
 [Graphical Glitch After Call to reset](https://github.com/Kautenja/gym-super-mario-bros/issues/72)
+
+[numpy.ndarray Attributes](https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html)
+
+
