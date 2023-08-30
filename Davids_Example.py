@@ -17,7 +17,7 @@ def rule_based_agent(observation, info):
         return 1
 def main():
     
-    env = gym.make('SuperMarioBros-v3', apply_api_compatibility=True, render_mode="human")
+    env = gym.make('SuperMarioBros-v0', apply_api_compatibility=True, render_mode="human")
     env = JoypadSpace(env, COMPLEX_MOVEMENT)
     observation = env.reset()
     
@@ -33,7 +33,7 @@ def main():
     
         print("Total reward:", total_reward)
         print(obs.shape)
-        print(obs.dtype.metadata)
+        print(obs.dtype.metadata)  
         print(obs.strides)
         print("---------")
     

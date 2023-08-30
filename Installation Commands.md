@@ -1,4 +1,5 @@
-# Installation Commands
+# For Windows 10
+## Installation commands
 Note: Running on Windows 10 and using Anaconda for virtual environments
 
 - Using Visual Studio, I downloaded the "Desktop Development with C++" workload
@@ -16,3 +17,13 @@ The test code worked, but I did notice that in the code given, on line 5, it sho
 
 Another thing I noticed was that the gaem was running abnormally fast in comparison with David's example in the Tutorial where he showed us. There might be something wrong with the emulator speed (I've asked about this in help3001 [here](https://secure.csse.uwa.edu.au/run/help3001?p=np&opt=B73&year=2023).
 
+### For Mac OS
+## Installation and Running with the Correct Python Interpreter
+Create the environment in Anaconda by choosing python 3.7.16, and launch VS code from Anaconda.
+- `conda activate mario`
+- `pip install gym-super-mario-bros` 
+
+## Troubleshooting
+- use `which python` to check python interpreter
+- if not the desired python interpreter, `echo $PATH` to inspect the python interpreter path, and `export PATH="$HOME/anaconda/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH"` to make sure the anaconda python interpreter have precedence
+- if any module not found, `pip install <module name>`
