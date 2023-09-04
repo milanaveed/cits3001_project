@@ -32,11 +32,17 @@ This is what determines Mario's next move. `.sample()` generates a number from 0
 If we run the test code and replace `action` in `env.step(action)` with one of these numbers, we can observe how this changes what Mario will do.
 
 `env.step(0)` -> Mario does nothing
+
 `env.step(1)` -> Mario moves RIGHT
+
 `env.step(2)` -> Mario JUMPS (once) + moves RIGHT
+
 `env.step(3)` -> Mario SPRINTS RIGHT
+
 `env.step(4)` -> Mario JUMPS (once) + SPRINTS RIGHT
+
 `env.step(5)` -> Mario JUMPS and does nothing
+
 `env.step(6)` -> Mario moves LEFT
 
 
