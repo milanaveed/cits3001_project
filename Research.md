@@ -18,9 +18,28 @@ Apparently David suggested that when we do `env = gym.make('SuperMarioBros-v0', 
 
 Using `v3` means it is easier to get it working, but this would result in less marks. I asked and they said that getting the code to run in `v0` gets you bonus marks. They haven't disclosed how many marks that is yet.
 
-Bonuse marks will also be awarded if Mario can traverse multiple levels.
+Bonus marks will also be awarded if Mario can traverse multiple levels.
 
 ![Image](https://user-images.githubusercontent.com/2184469/40948817-3cd6600a-6830-11e8-8abb-9cee6a31d377.png)
+
+## Mario's Moveset
+If we take a look at the lines:
+```
+action = env.action_space.sample()
+    obs, reward, terminated, truncated, info = env.step(action)
+```
+This is what determines Mario's next move. `.sample()` generates a number from 0-6, each of which indicates one of Mario's possible moves.
+If we run the test code and replace `action` in `env.step(action)` with one of these numbers, we can observe how this changes what Mario will do.
+
+`env.step(0)` -> Mario does nothing
+`env.step(1)` -> Mario moves RIGHT
+`env.step(2)` -> Mario JUMPS (once) + moves RIGHT
+`env.step(3)` -> Mario SPRINTS RIGHT
+`env.step(4)` -> Mario JUMPS (once) + SPRINTS RIGHT
+`env.step(5)` -> Mario JUMPS and does nothing
+`env.step(6)` -> Mario moves LEFT
+
+
 
 ## More sources to read into
 [gymnasium.Env](https://gymnasium.farama.org/api/env/#gymnasium.Env.step)
