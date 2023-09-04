@@ -31,4 +31,7 @@ Bonuse marks will also be awarded if Mario can traverse multiple levels.
 
 [numpy.ndarray Attributes](https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html)
 
+[Q-Netwrok Mario](https://blog.paperspace.com/building-double-deep-q-network-super-mario-bros/)
+
+
 

@@ -17,7 +17,8 @@ def rule_based_agent(observation, info):
         return 1
 def main():
     
-    env = gym.make('SuperMarioBros-v3', apply_api_compatibility=True, render_mode="human")
+    env = gym.make('SuperMarioBros-v0', apply_api_compatibility=True, render_mode="human")
+    env = make_env(env)
     env = JoypadSpace(env, COMPLEX_MOVEMENT)
     observation = env.reset()
     
