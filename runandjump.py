@@ -13,9 +13,10 @@ counter = 0
 for step in range(5000):
     time.sleep(0.000000000000000000000000000000000000001)
     
-    counter += 1
+    if(action == 4):
+        counter += 1
     
-    if(action == 4 and counter > 17):
+    if(action == 4 and counter > 16):
         action = 0
         counter = 0
     elif(action == 0):
