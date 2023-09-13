@@ -44,25 +44,25 @@ MASK_COLOUR = np.array([252, 136, 104])
 # filenames for object templates
 image_files = {
     "mario": {
-        "small": ["marioA.png", "marioB.png", "marioC.png", "marioD.png",
-                  "marioE.png", "marioF.png", "marioG.png"],
-        "tall": ["tall_marioA.png", "tall_marioB.png", "tall_marioC.png"],
+        "small": ["images/marioA.png", "images/marioB.png", "images/marioC.png", "images/marioD.png",
+                  "images/marioE.png", "images/marioF.png", "images/marioG.png"],
+        "tall": ["images/tall_marioA.png", "images/tall_marioB.png", "images/tall_marioC.png"],
         # Note: Many images are missing from tall mario, and I don't have any
         # images for fireball mario.
     },
     "enemy": {
-        "goomba": ["goomba.png"],
-        "koopa": ["koopaA.png", "koopaB.png"],
+        "goomba": ["images/goomba.png"],
+        "koopa": ["images/koopaA.png", "images/koopaB.png"],
     },
     "block": {
-        "block": ["block1.png", "block2.png", "block3.png", "block4.png"],
-        "question_block": ["questionA.png", "questionB.png", "questionC.png"],
-        "pipe": ["pipe_upper_section.png", "pipe_lower_section.png"],
+        "block": ["images/block1.png", "images/block2.png", "images/block3.png", "images/block4.png"],
+        "question_block": ["images/questionA.png", "images/questionB.png", "images/questionC.png"],
+        "pipe": ["images/pipe_upper_section.png", "images/pipe_lower_section.png"],
     },
     "item": {
         # Note: The template matcher is colourblind (it's using greyscale),
         # so it can't tell the difference between red and green mushrooms.
-        "mushroom": ["mushroom_red.png"],
+        "mushroom": ["images/mushroom_red.png"],
         # There are also other items in the game that I haven't included,
         # such as star.
 
