@@ -8,19 +8,19 @@ env = gym.make('SuperMarioBros-v0', apply_api_compatibility=True, render_mode="h
 env = JoypadSpace(env, SIMPLE_MOVEMENT)
 done = True
 env.reset()
-action = 0
+action = 6
 counter = 0
 for step in range(5000):
     time.sleep(0.000000000000000000000000000000000000001)
     
-    if(action == 4):
-        counter += 1
-    #After 16 steps switch action
-    if(action == 4 and counter > 16):
-        action = 0
+    counter += 1
+    
+    if(action == 4 and counter > 22):
+        action = 6
         counter = 0
-    elif(action == 0):
+    elif(action == 6 and counter > 4):
         action = 4
+        counter = 0
     
     print(action)  
     
