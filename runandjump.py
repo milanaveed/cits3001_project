@@ -11,7 +11,7 @@ env.reset()
 action = 0
 counter = 0
 for step in range(5000):
-    time.sleep(0.000000000000000000000000000000000000001)
+    time.sleep(0.0000000000000000000000000000001)
     
     if(action == 4):
         counter += 1
