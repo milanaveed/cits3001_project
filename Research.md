@@ -59,4 +59,90 @@ If we run the test code and replace `action` in `env.step(action)` with one of t
 [Q-Netwrok Mario](https://blog.paperspace.com/building-double-deep-q-network-super-mario-bros/)
 
 
+## Reinforcement Learning
+The unit coordinator mentioned algorithms from stable baselines for the project and I researched a bit about it.
+<br/>
+
+---------------------Below answered by ChatGPT-4---------------------
+
+### What are Stable Baselines algorithms?
+Stable Baselines is a set of high-quality implementations of reinforcement learning algorithms in Python using the TensorFlow library. Stable Baselines3 is an improvement over Stable Baselines and is based on PyTorch. The goal of these libraries is to provide reliable and efficient implementations of standard reinforcement learning algorithms. Here are some of the algorithms that are included in these libraries:
+
+#### Stable Baselines (TensorFlow-based)
+1. **Proximal Policy Optimization (PPO)** - A popular policy optimization method.
+2. **Trust Region Policy Optimization (TRPO)** - Another policy optimization method which tends to be more sample-efficient compared to methods like DDPG.
+3. **Deep Deterministic Policy Gradient (DDPG)** - An off-policy algorithm that can be used for continuous action spaces.
+4. **Actor-Critic using Kronecker-Factored Trust Region (ACKTR)** - This is a more complex policy optimization method that makes use of more advanced optimization techniques.
+5. **Twin Delayed DDPG (TD3)** - An extension of DDPG that introduces several new mechanisms to stabilize training.
+6. **Soft Actor-Critic (SAC)** - An off-policy actor-critic deep RL algorithm that aims to maximize the expected reward while also maximizing entropy.
+7. **A2C (Advantage Actor-Critic)** - A policy gradient method that leverages an advantage function to reduce variance in the policy updates.
+8. **DQN (Deep Q-Networks)** - A value-based method that leverages deep neural networks to estimate Q-values.
+   
+#### Stable Baselines3 (PyTorch-based)
+1. **PPO (Proximal Policy Optimization)** - The PyTorch implementation of PPO.
+2. **A2C (Advantage Actor-Critic)** - The PyTorch implementation of A2C.
+3. **DQN (Deep Q-Networks)** - The PyTorch implementation of DQN.
+4. **SAC (Soft Actor-Critic)** - The PyTorch implementation of SAC.
+5. **TD3 (Twin Delayed DDPG)** - The PyTorch implementation of TD3.
+
+These libraries also contain utilities for recording and visualizing the results of reinforcement learning experiments, making it easier to analyze and debug the training process. It is highly recommended to consult the official documentation for the respective libraries (Stable Baselines and Stable Baselines3) for detailed information on each algorithm and how to use it in your reinforcement learning projects.
+
+### Which Stable baselines algorithm is suitable for the Super Mario Bros project?
+For a project where you are using a Reinforcement Learning (RL) approach to train an agent to play "Super Mario Bros," selecting an appropriate RL algorithm is crucial. Given your scenario where you're working with a discrete action space and a potentially complex state space, here are some algorithms that you might consider, and why they might be suitable:
+
+1. **PPO (Proximal Policy Optimization)**: PPO is widely used in practice for a range of RL problems because of its stability and efficiency. It would be a good starting point for your project.
+
+2. **DQN (Deep Q-Network)**: DQN could be another great choice, especially because it handles discrete action spaces well, which is the case for a game like "Super Mario Bros." DQN with extensions such as double DQN, prioritized replay, and dueling DQN can potentially enhance performance further.
+
+3. **A2C (Advantage Actor-Critic)** or **A3C (Asynchronous Advantage Actor-Critic)**: These actor-critic methods could also be useful as they try to combine the benefits of value-based and policy-based methods.
+
+Here is a general approach to setting up your project:
+
+1. **Environment Setup**: Make sure to correctly set up the `gym-super-mario-bros` environment and familiarize yourself with the state space, action space, and rewards.
+   
+2. **Algorithm Selection**: Start with a simpler algorithm (like PPO or DQN) to establish a baseline performance.
+
+3. **Feature Engineering**: Consider if any feature engineering is required to help the agent learn efficiently. Sometimes simplifying the state space or engineering certain features can make learning more efficient.
+
+4. **Hyperparameter Tuning**: Once you have a baseline, experiment with different hyperparameters to optimize the performance of your chosen algorithm.
+
+5. **Training**: Train your agent for a sufficient number of episodes to allow it to learn a good policy. Be prepared for this to potentially take a long time, depending on the complexity of your setup.
+
+6. **Evaluation**: Regularly evaluate your agent's performance on different levels to ensure it is learning a general strategy, not just overfitting to particular levels.
+
+I would recommend starting with implementing a well-documented algorithm like PPO from Stable Baselines3 library to get started with your project. Good luck!
+
+### Where can we find good resources about PPO algorithm?
+Absolutely, learning about Proximal Policy Optimization (PPO) can indeed be a significant asset, especially for your current project. Here are some resources where you can learn more about PPO:
+
+#### Papers and Documentation
+
+1. **[Original PPO Paper](https://arxiv.org/abs/1707.06347)**: Understanding PPO directly from the original paper can be quite beneficial, although it might be a bit technical.
+   
+2. **[OpenAI Spinning Up](https://spinningup.openai.com/en/latest/algorithms/ppo.html)**: OpenAI's educational resource provides a great explanation of PPO along with Python code.
+
+3. **[Stable Baselines3 Documentation](https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html)**: The documentation gives a detailed explanation of how to use the PPO implementation in the Stable Baselines3 library.
+
+#### Blogs and Articles
+
+4. **[Towards Data Science](https://towardsdatascience.com/)**: You can find several articles explaining PPO in a simplified manner on this platform. Just search for "Proximal Policy Optimization" in the search bar.
+
+5. **[Medium](https://medium.com/)**: Similar to Towards Data Science, you can find various articles on PPO here. Search for PPO to find related articles.
+
+#### Video Tutorials
+
+6. **[YouTube](https://www.youtube.com/)**: There are many YouTubers who explain RL algorithms including PPO. Channels such as Sentdex and David Silver’s Reinforcement Learning Course might be beneficial.
+
+#### GitHub and Communities
+
+8. **[GitHub](https://github.com/)**: You can find various PPO implementations and projects on GitHub which can give you a practical understanding of how to work with PPO.
+
+9. **[Reddit r/MachineLearning](https://www.reddit.com/r/MachineLearning/)**: Subreddits like this one can be good places to ask specific questions and get answers from experienced individuals in the field.
+
+10. **[Stack Overflow](https://stackoverflow.com/)**: You can ask questions and find previous questions and answers about technical issues you might encounter while working with PPO.
+
+Remember to complement these resources with hands-on practice by implementing PPO and experimenting with different configurations to see how it performs in different settings. Good luck!
+
+----------------------Above answered by ChatGPT-4----------------------
+
 
