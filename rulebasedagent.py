@@ -4,6 +4,9 @@ import gym
 import cv2 as cv
 import numpy as np
 import string
+import time
+
+
 
 # code for locating objects on the screen in super mario bros
 # by Lauren Gee
@@ -253,7 +256,7 @@ def locate_objects(screen, mario_status):
 ################################################################################
 # GETTING INFORMATION AND CHOOSING AN ACTION
 
-def make_action(screen, info, step, env, prev_action):
+def make_action(screen, info, step, env, prev_action, counter):
     mario_status = info["status"]
     object_locations = locate_objects(screen, mario_status)
 
@@ -264,7 +267,7 @@ def make_action(screen, info, step, env, prev_action):
     # Printing the whole grid is slow, so I am only printing it occasionally,
     # and I'm only printing it for debug purposes, to see if I'm locating objects
     # correctly.
-    if PRINT_GRID and step % 100 == 0:
+    if PRINT_GRID:
         print_grid(screen, object_locations)
         # If printing the grid doesn't display in an understandable way, change
         # the settings of your terminal (or anaconda prompt) to have a smaller
@@ -297,6 +300,9 @@ def make_action(screen, info, step, env, prev_action):
     # For example, the enemy_locations list might look like this:
     # [((161, 193), (16, 16), 'goomba'), ((175, 193), (16, 16), 'goomba')]
     
+    #---------------------------------------------------------------------------
+    # PRINTING LOCATIONS
+    #---------------------------------------------------------------------------
     if PRINT_LOCATIONS:
         # To get the information out of a list:
         for enemy in enemy_locations:
@@ -340,23 +346,132 @@ def make_action(screen, info, step, env, prev_action):
         mario_status = info["status"]
         print("Mario's location in world:",
               mario_world_x, mario_world_y, f"({mario_status} mario)")
-
+    #---------------------------------------------------------------------------
+    # METHOD
+    #---------------------------------------------------------------------------
     # TODO: Write code for a strategy, such as a rule based agent.
 
     # Choose an action from the list of available actions.
     # For example, action = 0 means do nothing
     #              action = 1 means press 'right' button
     #              action = 2 means press 'right' and 'A' buttons at the same time
-
-    if step % 10 == 0:
-        # I have no strategy at the moment, so I'll choose a random action.
-        action = env.action_space.sample()
-        return action
+    
+    enemy_jump = False
+    block_jump = False
+    pit_jump = True
+    if mario_locations:
+        location, dimensions, object_name = mario_locations[0]
+        mario_x, mario_y = location
+        mario_width, mario_height = dimensions
+        #print(mario_width)
+        
+        #CHECKING IF WE NEED TO AVOID ENEMIES   
+        for enemy in enemy_locations:
+            enemy_location, enemy_dimensions, enemy_name = enemy
+            enemy_x, enemy_y = enemy_location
+            
+            if enemy_x == mario_x + mario_width + 1 and enemy_x - mario_x > -1:
+                enemy_jump = True
+                print("Located Enemy")
+                break
+                
+        #CHECKING IF WE NEED TO JUMP OVER A BLOCK
+        for block in block_locations:
+            block_location, block_dimensions, block_name = block
+            block_x, block_y = block_location
+            block_width, block_height = block_dimensions
+            
+            #if(block_name == 'pipe'):
+             #   print('Mario y:', mario_y)
+              #  print("Mario height:", mario_height)
+               # print("Mario base:", mario_y - mario_height)
+                #print('Pipe y:', block_y)
+                #print("Pipe height:", block_height)
+                #print("Pipe base:", block_y - mario_height)
+                #print("--------")
+            
+            if block_y <= mario_y and block_y + block_height + 1 == mario_y + mario_height and block_x - mario_x < 50 and block_x - mario_x > -1:
+                block_jump = True
+                print("Located block tower")
+                break
+        
+        #CHECKING FOR PIT JUMP
+        block_below_mario = False
+        for block in block_locations:
+            block_location, block_dimensions, block_name = block
+            block_x, block_y = block_location
+            block_width, block_height = block_dimensions
+            
+            # print("Block_y:", block_y)
+            # print("Mario + height:", mario_y + mario_height)
+            if block_y == mario_y + mario_height - 1:
+                block_below_mario = True
+                break
+        print(block_below_mario)
+                
+            
+        for block in block_locations:
+            block_location, block_dimensions, block_name = block
+            block_x, block_y = block_location
+            block_width, block_height = block_dimensions
+            
+            print("Block y:", block_y)
+            print("mario_y + mario_height:", mario_y + mario_height)
+            print("Block x:", block_x)
+            print("mario_x + mario_width:", mario_x + mario_width)
+            print("------------")
+            #time.sleep(1)
+            if block_y >= mario_y + mario_height and block_x == mario_x + mario_width + 1:
+                
+                
+                pit_jump = False
+                break
+            
+        if pit_jump:
+            print('Located Pit')
+        
+        if block_below_mario:
+            pit_jump = True
+            
+        
+        
+    if (enemy_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17):
+        
+        if(counter == 0):
+            print("Enemy Jump")
+            action = 0
+            counter += 1
+            return action, counter
+        else:
+            action = 4
+            counter += 1
+            return action, counter
+    elif (block_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17):
+        
+        if(counter == 0):
+            print("Block Jump")
+            action = 0
+            counter += 1
+            return action, counter
+        else:
+            action = 4
+            counter += 1
+            return action, counter
+    elif (pit_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17):
+        
+        if(counter == 0):
+            print("Pit Jump")
+            action = 0
+            counter += 1
+            return action, counter
+        else:
+            action = 4
+            counter += 1
+            return action, counter
     else:
-        # With a random agent, I found that choosing the same random action
-        # 10 times in a row leads to slightly better performance than choosing
-        # a new random action every step.
-        return prev_action
+        action = 3
+        counter = 0
+        return action, counter
 
 ################################################################################
 
@@ -366,12 +481,16 @@ env = JoypadSpace(env, SIMPLE_MOVEMENT)
 obs = None
 done = True
 env.reset()
+counter = 0
 for step in range(100000):
     if obs is not None:
-        action = make_action(obs, info, step, env, action)
+        action, counter = make_action(obs, info, step, env, action, counter)
+        #print(action)
     else:
-        action = env.action_space.sample()
+        action = 3
     obs, reward, terminated, truncated, info = env.step(action)
+    #print(action)
+    #counter += 1
     done = terminated or truncated
     if done:
         env.reset()

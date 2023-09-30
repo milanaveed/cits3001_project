@@ -10,12 +10,14 @@ done = True
 env.reset()
 action = 0
 counter = 0
-for step in range(5000):
-<<<<<<< HEAD
-    # time.sleep(0.000000000000000000000000000000000000001)
-=======
+for step in range(10000):
+
+    with open('test_write.txt', 'a') as file:
+        file.write("New line\n")
+        file.write("Action:" + str(action) + "\n")
+        
+
     time.sleep(0.0000000000000000000000000000001)
->>>>>>> 27a4283d2975bc844615a400e8cb78e1346c192b
     
     if(action == 4):
         counter += 1
