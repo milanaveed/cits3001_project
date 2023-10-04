@@ -21,7 +21,6 @@ from matplotlib import pyplot as plt
 # * Simplify the movements: use RIGHT_ONLY?
 
 ####################################################################
-
 # Set up game environment and simplify actions
 env = gym_super_mario_bros.make("SuperMarioBros-v0")
 # sample the ['right'] and ['right', 'A'] actions
@@ -47,28 +46,32 @@ env = VecFrameStack(env, 4, channels_order='last')
 # todo: can we resize the frame? see what it'll look like after resize
 # todo: can we skip some frames?
 
-'''
-     # 1. CREATE THE MARIO ENV
-     mario_env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
-     # 2. SIMPLIFY THE CONTROLS
-     mario_env = JoypadSpace(mario_env, SIMPLE_MOVEMENT)
-    # 3. SKIP FRAMES AND TAKE ACTION EVERY N FRAMES
-    mario_env = SkipFrame(mario_env, skip=4)
-    # 4. TRANSFORM OBSERVATIONS INTO GRAYSCALE
-    mario_env = GrayScaleObservation(mario_env)
-    # 5. RESIZE OBSERVATIONS TO REDUCE DIMENSIONALITY
-    mario_env = ResizeObservation(mario_env, shape=84) 
-    # 6. NORMALIZE OBSERVATIONS
-    mario_env = TransformObservation(mario_env, f=lambda x: x / 255.)
-    # 7. STACK N FRAMES TO INTRODUCE TEMPORAL ASPECT
-    mario_env = FrameStack(mario_env, num_stack=4)
+###################################################################
+# Possible improvement
+###################################################################
+#      # 1. CREATE THE MARIO ENV
+#      mario_env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
+#      # 2. SIMPLIFY THE CONTROLS
+#      mario_env = JoypadSpace(mario_env, SIMPLE_MOVEMENT)
+#     # 3. SKIP FRAMES AND TAKE ACTION EVERY N FRAMES
+#     mario_env = SkipFrame(mario_env, skip=4)
+#     # 4. TRANSFORM OBSERVATIONS INTO GRAYSCALE
+#     mario_env = GrayScaleObservation(mario_env)
+#     # 5. RESIZE OBSERVATIONS TO REDUCE DIMENSIONALITY
+#     mario_env = ResizeObservation(mario_env, shape=84) 
+#     # 6. NORMALIZE OBSERVATIONS
+#     mario_env = TransformObservation(mario_env, f=lambda x: x / 255.)
+#     # 7. STACK N FRAMES TO INTRODUCE TEMPORAL ASPECT
+#     mario_env = FrameStack(mario_env, num_stack=4)
 
-    return mario_env
+#     return mario_env
 
-mario_env  = add_wrapper_functionality()
-'''
+# mario_env  = add_wrapper_functionality()
 
+
+###############################################################
 # Train and save the training process
+###############################################################
 class TrainAndSaveCallback(BaseCallback):
 
     def __init__(self, check_freq, save_path, verbose=1):
@@ -99,11 +102,13 @@ model.learn(4000000, callback=callback)
 
 model.save('test-model')
 
-# 1am 开始train
+# started the current training from 1 am
 
 #TODO: upgrade stablebaselines3 version to v1.18.0
 
+#####################################################################
 # Load the training result
+#####################################################################
 # model = PPO.load('./reinforcement-learning/train/best_model_40000')
 # state = env.reset()
 # while True:
@@ -112,7 +117,12 @@ model.save('test-model')
 #     state, reward, done, info = env.step(action)
 #     env.render()
 
+
+
+
+#####################################################################
 # Testing the game
+#####################################################################
 # state = env.reset()
 # state, reward, done, info = env.step([1])
 # state, reward, done, info = env.step([1])
