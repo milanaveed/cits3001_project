@@ -256,7 +256,7 @@ def locate_objects(screen, mario_status):
 ################################################################################
 # GETTING INFORMATION AND CHOOSING AN ACTION
 
-def make_action(screen, info, step, env, prev_action, counter):
+def make_action(screen, info, step, env, prev_action, counter, previous_jump):
     mario_status = info["status"]
     object_locations = locate_objects(screen, mario_status)
 
@@ -358,120 +358,179 @@ def make_action(screen, info, step, env, prev_action, counter):
     
     enemy_jump = False
     block_jump = False
-    pit_jump = True
-    if mario_locations:
-        location, dimensions, object_name = mario_locations[0]
-        mario_x, mario_y = location
-        mario_width, mario_height = dimensions
-        #print(mario_width)
-        
-        #CHECKING IF WE NEED TO AVOID ENEMIES   
-        for enemy in enemy_locations:
-            enemy_location, enemy_dimensions, enemy_name = enemy
-            enemy_x, enemy_y = enemy_location
+    pit_jump = False
+    if(previous_jump == -1):
+        if mario_locations:
+            location, dimensions, object_name = mario_locations[0]
+            mario_x, mario_y = location
+            mario_width, mario_height = dimensions
+            #print(mario_width)
             
-            if enemy_x == mario_x + mario_width + 1 and enemy_x - mario_x > -1:
-                enemy_jump = True
-                print("Located Enemy")
-                break
+            #CHECKING IF WE NEED TO AVOID ENEMIES   
+            for enemy in enemy_locations:
+                enemy_location, enemy_dimensions, enemy_name = enemy
+                enemy_x, enemy_y = enemy_location
+                enemy_width, enemy_height = enemy_dimensions
+                #time.sleep(1)
+                # print("Enemy x:", enemy_x)
+                # print("Mario x:", mario_x)
+                # print("mario_x + mario_width + 50:", mario_x + mario_width + 50)
+                # print("enemy_x - mario_x:", enemy_x - mario_x)
+                # print("===========================")
+                if enemy_x <= mario_x + mario_width + 16 and enemy_x - mario_x > -1 and enemy_y + enemy_height == mario_y + mario_height:
+                    enemy_jump = True
+                    previous_jump = 0
+                    #print("Located Enemy")
+                    break
+                    
+            #CHECKING IF WE NEED TO JUMP OVER A BLOCK
+            for block in block_locations:
+                block_location, block_dimensions, block_name = block
+                block_x, block_y = block_location
+                block_width, block_height = block_dimensions
                 
-        #CHECKING IF WE NEED TO JUMP OVER A BLOCK
-        for block in block_locations:
-            block_location, block_dimensions, block_name = block
-            block_x, block_y = block_location
-            block_width, block_height = block_dimensions
-            
-            #if(block_name == 'pipe'):
-             #   print('Mario y:', mario_y)
-              #  print("Mario height:", mario_height)
-               # print("Mario base:", mario_y - mario_height)
-                #print('Pipe y:', block_y)
-                #print("Pipe height:", block_height)
-                #print("Pipe base:", block_y - mario_height)
-                #print("--------")
-            
-            if block_y <= mario_y and block_y + block_height + 1 == mario_y + mario_height and block_x - mario_x < 50 and block_x - mario_x > -1:
-                block_jump = True
-                print("Located block tower")
-                break
-        
-        #CHECKING FOR PIT JUMP
-        block_below_mario = False
-        for block in block_locations:
-            block_location, block_dimensions, block_name = block
-            block_x, block_y = block_location
-            block_width, block_height = block_dimensions
-            
-            # print("Block_y:", block_y)
-            # print("Mario + height:", mario_y + mario_height)
-            if block_y == mario_y + mario_height - 1:
-                block_below_mario = True
-                break
-        print(block_below_mario)
+                #if(block_name == 'pipe'):
+                #   print('Mario y:', mario_y)
+                #  print("Mario height:", mario_height)
+                # print("Mario base:", mario_y - mario_height)
+                    #print('Pipe y:', block_y)
+                    #print("Pipe height:", block_height)
+                    #print("Pipe base:", block_y - mario_height)
+                    #print("--------")
                 
+                if block_y <= mario_y and block_y + block_height + 1 == mario_y + mario_height and block_x - mario_x < 50 and block_x - mario_x > -1:
+                    block_jump = True
+                    previous_jump = 1
+                    #print("Located block tower")
+                    break
+                
+            #CHECKING FOR PIT JUMP
+            #We should find which block mario is on
+            #We should then check if there is a block next to that
+            mario_block_y = mario_y + mario_height - 1
+            mario_block_x = 16*(mario_x//16)
+            block_below_mario = False
             
-        for block in block_locations:
-            block_location, block_dimensions, block_name = block
-            block_x, block_y = block_location
-            block_width, block_height = block_dimensions
+            for block in block_locations:
+                block_location, block_dimensions, block_name = block
+                block_x, block_y = block_location
+                block_width, block_height = block_dimensions
+                
+                if block_x == mario_block_x and block_y == mario_block_y:
+                    block_below_mario = True
             
-            print("Block y:", block_y)
-            print("mario_y + mario_height:", mario_y + mario_height)
-            print("Block x:", block_x)
-            print("mario_x + mario_width:", mario_x + mario_width)
-            print("------------")
+            pit_next_to_mario = True
+            pit_block_y = mario_block_y
+            pit_block_x = mario_block_x + 32
             #time.sleep(1)
-            if block_y >= mario_y + mario_height and block_x == mario_x + mario_width + 1:
+            if block_below_mario:
+                for block in block_locations:
+                    block_location, block_dimensions, block_name = block
+                    block_x, block_y = block_location
+                    block_width, block_height = block_dimensions
+                    
+                    print("Mario x:",mario_x)
+                    print("Mario Block:",mario_block_x,mario_block_y)
+                    print("Pit Block:",pit_block_x,pit_block_y)
+                    print("Current Block:",block_x,block_y)
+                    print("----------------")
+                    if (block_x == pit_block_x and block_y == pit_block_y) or block_name == "pipe":
+                        #time.sleep(1)
+                        pit_next_to_mario = False
+                        print(block_name)
+                        break
+                    #print("STOP")
+                time.sleep(0.01)
+                        
+                if pit_next_to_mario:
+                    time.sleep(5)
+                    print("yesssssssssssssssssssssssssssssssssssssssssssss")
+                    pit_jump = True
+                    previous_jump = 2
                 
-                
-                pit_jump = False
-                break
             
-        if pit_jump:
-            print('Located Pit')
-        
-        if block_below_mario:
-            pit_jump = True
+                # for block in block_locations:
+                #     block_location, block_dimensions, block_name = block
+                #     block_x, block_y = block_location
+                #     block_width, block_height = block_dimensions
+                    
+                #     # print("Block y:", block_y)
+                #     # print("mario_y + mario_height:", mario_y + mario_height)
+                #     # print("Block x:", block_x)
+                #     # print("mario_x + mario_width:", mario_x + mario_width)
+                #     # print("------------")
+                    
+                #     if block_y == mario_y + mario_height - 1 and mario_x < block_x + block_width :
+                #         pit_jump = False
+                #         break
             
+            # if pit_jump:
+            #     previous_jump = 2
+            #     print('Located Pit')
+            #time.sleep(1000000)     
         
-        
-    if (enemy_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17):
-        
-        if(counter == 0):
-            print("Enemy Jump")
-            action = 0
-            counter += 1
-            return action, counter
-        else:
-            action = 4
-            counter += 1
-            return action, counter
-    elif (block_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17):
+    if ((enemy_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17)) and (previous_jump == 0):
         
         if(counter == 0):
-            print("Block Jump")
-            action = 0
-            counter += 1
-            return action, counter
-        else:
+            print("Enemy Jump 0")
             action = 4
             counter += 1
-            return action, counter
-    elif (pit_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17):
+            previous_jump = 0
+            return action, counter, previous_jump
+        elif(counter == 17):
+            print("Enemy Jump", counter)
+            counter += 1
+            action = 3
+            previous_jump = -1
+            return action, counter, previous_jump
+        else:
+            print("Enemy Jump", counter)
+            action = 4
+            counter += 1
+            return action, counter, previous_jump
+    elif ((block_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17)) and (previous_jump == 1):
         
         if(counter == 0):
-            print("Pit Jump")
-            action = 0
-            counter += 1
-            return action, counter
-        else:
+            print("Block Jump 0")
             action = 4
             counter += 1
-            return action, counter
+            previous_jump = 1
+            return action, counter, previous_jump
+        elif(counter == 17):
+            print("Block Jump", counter)
+            counter += 1
+            action = 3
+            previous_jump = -1
+            return action, counter, previous_jump
+        else:
+            print("Block Jump", counter)
+            action = 4
+            counter += 1
+            return action, counter, previous_jump
+    elif ((pit_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17)) and (previous_jump == 2):
+        
+        if(counter == 0):
+            print("Pit Jump 0")
+            action = 4
+            counter += 1
+            previous_jump = 2
+            return action, counter, previous_jump
+        elif(counter == 17):
+            print("Pit Jump", counter)
+            counter += 1
+            action = 3
+            previous_jump = -1
+            return action, counter, previous_jump
+        else:
+            print("Pit Jump", counter)
+            action = 4
+            counter += 1
+            return action, counter, previous_jump
     else:
         action = 3
         counter = 0
-        return action, counter
+        previous_jump = -1
+        return action, counter, previous_jump
 
 ################################################################################
 
@@ -482,9 +541,10 @@ obs = None
 done = True
 env.reset()
 counter = 0
+previous_jump = -1
 for step in range(100000):
     if obs is not None:
-        action, counter = make_action(obs, info, step, env, action, counter)
+        action, counter, previous_jump = make_action(obs, info, step, env, action, counter, previous_jump)
         #print(action)
     else:
         action = 3
