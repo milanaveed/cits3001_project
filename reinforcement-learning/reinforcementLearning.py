@@ -2,46 +2,52 @@
 import gym
 import gym_super_mario_bros
 import os
+import signal # Ignore keyboard interruption and prevent accidental quits
 # #import the Joypad wrapper
 from nes_py.wrappers import JoypadSpace
 # #import the simplified controls
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
-from gym.wrappers import GrayScaleObservation
+from gym.wrappers import GrayScaleObservation, ResizeObservation
 from stable_baselines3.common.vec_env import VecFrameStack, DummyVecEnv
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback
-# from wrappers import SkipFrame, ResizeObservation
+# # from wrappers import SkipFrame, 
 from matplotlib import pyplot as plt
 
 
 # Beginner Tutorial: https://www.youtube.com/watch?v=2eeYqJ0uBKE
-# Level Up Tutorial: https://www.youtube.com/watch?v=PxoG0A2QoFs
-# Inspiration: https://pytorch.org/tutorials/intermediate/mario_rl_tutorial.html
 
 # * Simplify the movements: use RIGHT_ONLY?
 
 ####################################################################
 # Set up game environment and simplify actions
-env = gym_super_mario_bros.make("SuperMarioBros-v0")
-# sample the ['right'] and ['right', 'A'] actions
-MY_MOVEMENT = SIMPLE_MOVEMENT[1:3]
-env = JoypadSpace(env, MY_MOVEMENT)
+env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
 # env = JoypadSpace(env, SIMPLE_MOVEMENT)
+# SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
+# sample the ['right'] and ['right', 'A'] actions
+MY_MOVEMENT = SIMPLE_MOVEMENT[1:3] 
+env = JoypadSpace(env, MY_MOVEMENT)
+print(env.observation_space.shape) # (240, 256, 3)
+# print(MY_MOVEMENT) # [['right'], ['right', 'A']]
 
 # Skip frames
 # env = SkipFrame(env, skip=4)
 
 # Grayscale environment
 env = GrayScaleObservation(env, keep_dim=True)
+print(env.observation_space.shape) # (240, 256, 1)
 
 # Resize observation
-# env = ResizeObservation(env, shape=84)
+env = ResizeObservation(env, shape=84)
+print(env.observation_space.shape) # (84, 84, 1)
+
 
 # Create a vectorized wrapper for an environment
 env = DummyVecEnv([lambda: env])
 
-# Stack the frames
+# # Stack the four frames each time
 env = VecFrameStack(env, 4, channels_order='last')
+print(env.observation_space.shape) # (1, 84, 84, 4)
 
 # todo: can we resize the frame? see what it'll look like after resize
 # todo: can we skip some frames?
@@ -66,7 +72,20 @@ env = VecFrameStack(env, 4, channels_order='last')
 
 #     return mario_env
 
-# mario_env  = add_wrapper_functionality()
+
+###############################################################
+# Prevent accidental quits when training
+###############################################################
+cur_pid=os.getpid()
+print(cur_pid)
+
+def SigIntHand(SIG, FRM):
+    print("Ctrl-C does not work on the cmd prompt.")
+    print("List the process id by `tasklist | findstr python`")
+    print("COMMAND THAT CAN KILL THE PROCESS:")
+    print(f"taskkill /PID {cur_pid} /F")
+
+signal.signal(signal.SIGINT, SigIntHand)
 
 
 ###############################################################
@@ -86,7 +105,7 @@ class TrainAndSaveCallback(BaseCallback):
     def _on_step(self):
         if self.n_calls % self.check_freq == 0:
             model_path = os.path.join(
-                self.save_path, 'best_model_{}'.format(self.n_calls))
+                self.save_path, '1-1_model_{}'.format(self.n_calls))
             self.model.save(model_path)
 
         return True
@@ -95,16 +114,15 @@ class TrainAndSaveCallback(BaseCallback):
 DATA_DIR = './reinforcement-learning/train/'
 LOG_DIR = './reinforcement-learning/logs/'
 
-callback = TrainAndSaveCallback(check_freq=50000, save_path=DATA_DIR)
+callback = TrainAndSaveCallback(check_freq=500000, save_path=DATA_DIR)
 model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR,
-            learning_rate=0.000005, n_steps=512)
+            learning_rate=0.000001, n_steps=512)
 model.learn(4000000, callback=callback)
 
-model.save('test-model')
+model.save('1-1-model')
 
-# started the current training from 1 am
+# started the current training from 17:50 Sunday
 
-#TODO: upgrade stablebaselines3 version to v1.18.0
 
 #####################################################################
 # Load the training result
@@ -121,12 +139,12 @@ model.save('test-model')
 
 
 #####################################################################
-# Testing the game
+# Testing the game and show frames
 #####################################################################
 # state = env.reset()
-# state, reward, done, info = env.step([1])
-# state, reward, done, info = env.step([1])
-# state, reward, done, info = env.step([1])
+# state, reward, done, info = env.step([env.action_space.sample()])
+# state, reward, done, info = env.step([env.action_space.sample()])
+# state, reward, done, info = env.step([env.action_space.sample()])
 # plt.figure(figsize=(15,12))
 # for idx in range(state.shape[3]):
 #     plt.subplot(1,4,idx+1)
@@ -144,10 +162,10 @@ model.save('test-model')
 # Create a flag - restart or not
 # done = True
 # # Loop through each frame in the game
-# for step in range(100000):
+# for step in range(1000):
 #     # Start the game to begin with
 #     if done:
-#         # Start the gamee
+#         # Start the game
 #         env.reset()
 #     # Do random actions
 #     state, reward, done, info = env.step(env.action_space.sample())
