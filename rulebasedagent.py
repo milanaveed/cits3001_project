@@ -56,9 +56,11 @@ image_files = {
     "enemy": {
         "goomba": ["images/goomba.png"],
         "koopa": ["images/koopaA.png", "images/koopaB.png"],
+        #"fish": ["images/fishA.png", "images/fishB.png"],
+        "plant": ["images/plantA.png", "images/plantB.png"],
     },
     "block": {
-        "block": ["images/block1.png", "images/block2.png", "images/block3.png", "images/block4.png"],
+        "block": ["images/block1.png", "images/block2.png", "images/block3.png", "images/block4.png", "images/block5.png", "images/block6.png", "images/block7.png", "images/block8.png"],
         "question_block": ["images/questionA.png", "images/questionB.png", "images/questionC.png"],
         "pipe": ["images/pipe_upper_section.png", "images/pipe_lower_section.png"],
     },
@@ -85,6 +87,8 @@ def _get_template(filename):
     if num_pixels - np.sum(mask) < 10:
         mask = None # this is important for avoiding a problem where some things match everything
     dimensions = tuple(template.shape[::-1])
+    # print(filename)
+    # print(template)
     return template, mask, dimensions
 
 def get_template(filenames):
@@ -275,7 +279,7 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
         # terminal window / whole screen.
 
         # object_locations contains the locations of all the objects we found
-        print(object_locations)
+        #print(object_locations)
 
     # List of locations of Mario:
     mario_locations = object_locations["mario"]
@@ -418,6 +422,9 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
                 
                 if block_x == mario_block_x and block_y == mario_block_y:
                     block_below_mario = True
+                
+                if block_x == mario_block_x and block_y == mario_block_y and block_name == 'pipe':
+                    pit_jump = True
             
             pit_next_to_mario = True
             pit_block_y = mario_block_y
@@ -429,22 +436,22 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
                     block_x, block_y = block_location
                     block_width, block_height = block_dimensions
                     
-                    print("Mario x:",mario_x)
-                    print("Mario Block:",mario_block_x,mario_block_y)
-                    print("Pit Block:",pit_block_x,pit_block_y)
-                    print("Current Block:",block_x,block_y)
-                    print("----------------")
-                    if (block_x == pit_block_x and block_y == pit_block_y) or block_name == "pipe":
+                    # print("Mario x:",mario_x)
+                    # print("Mario Block:",mario_block_x,mario_block_y)
+                    # print("Pit Block:",pit_block_x,pit_block_y)
+                    # print("Current Block:",block_x,block_y)
+                    # print("----------------")
+                    if (block_x == pit_block_x and block_y == pit_block_y):
                         #time.sleep(1)
                         pit_next_to_mario = False
-                        print(block_name)
+                        #print(block_name)
                         break
                     #print("STOP")
-                time.sleep(0.01)
+                #time.sleep(0.01)
                         
                 if pit_next_to_mario:
-                    time.sleep(5)
-                    print("yesssssssssssssssssssssssssssssssssssssssssssss")
+                    #time.sleep(5)
+                    # print("yesssssssssssssssssssssssssssssssssssssssssssss")
                     pit_jump = True
                     previous_jump = 2
                 
@@ -469,7 +476,7 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
             #     print('Located Pit')
             #time.sleep(1000000)     
         
-    if ((enemy_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17)) and (previous_jump == 0):
+    if ((enemy_jump and counter <= 12) or (prev_action == 4 and counter <= 12) or (prev_action == 0 and counter <= 12)) and (previous_jump == 0):
         
         if(counter == 0):
             print("Enemy Jump 0")
@@ -477,7 +484,7 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
             counter += 1
             previous_jump = 0
             return action, counter, previous_jump
-        elif(counter == 17):
+        elif(counter == 12):
             print("Enemy Jump", counter)
             counter += 1
             action = 3
@@ -533,8 +540,7 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
         return action, counter, previous_jump
 
 ################################################################################
-
-env = gym.make("SuperMarioBros-v0", apply_api_compatibility=True, render_mode="human")
+env = gym.make("SuperMarioBros-6-2-v0", apply_api_compatibility=True, render_mode="human")
 env = JoypadSpace(env, SIMPLE_MOVEMENT)
 
 obs = None

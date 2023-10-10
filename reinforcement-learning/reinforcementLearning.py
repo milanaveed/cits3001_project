@@ -92,30 +92,36 @@ class TrainAndSaveCallback(BaseCallback):
         return True
 
 
+# DATA_DIR = './reinforcement-learning/train/'
+# LOG_DIR = './reinforcement-learning/logs/'
 DATA_DIR = './reinforcement-learning/train/'
 LOG_DIR = './reinforcement-learning/logs/'
 
-callback = TrainAndSaveCallback(check_freq=50000, save_path=DATA_DIR)
-model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR,
-            learning_rate=0.000005, n_steps=512)
-model.learn(4000000, callback=callback)
+#check_freq = how many steps you want to save the model
+# callback = TrainAndSaveCallback(check_freq=50000, save_path=DATA_DIR)
+# model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR,
+#             #5 or 1
+#             #For every n_steps possibly how many frames
+#             learning_rate=0.000001, n_steps=512)
+# #Total number learnt
+# model.learn(4000000, callback=callback)
 
-model.save('test-model')
+# model.save('test-model')
 
 # started the current training from 1 am
 
 #TODO: upgrade stablebaselines3 version to v1.18.0
 
-#####################################################################
+# ####################################################################
 # Load the training result
-#####################################################################
-# model = PPO.load('./reinforcement-learning/train/best_model_40000')
-# state = env.reset()
-# while True:
-#     action, _ = model.predict(state)
-#     print(MY_MOVEMENT[action[0]])
-#     state, reward, done, info = env.step(action)
-#     env.render()
+# ####################################################################
+model = PPO.load('./reinforcement-learning/train/best_model_450000')
+state = env.reset()
+while True:
+    action, _ = model.predict(state)
+    print(MY_MOVEMENT[action[0]])
+    state, reward, done, info = env.step(action)
+    env.render()
 
 
 

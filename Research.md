@@ -145,4 +145,5 @@ Remember to complement these resources with hands-on practice by implementing PP
 
 ----------------------Above answered by ChatGPT-4----------------------
 
-
+## Playing the game by hand
+nes_py --rom super-mario-bros.nes
