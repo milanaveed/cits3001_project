@@ -1,6 +1,11 @@
 PythonApplication1/*
 .vscode
+.DS_Store
+
+test-model.zip
 
 logs/
 
 train/
+
+
