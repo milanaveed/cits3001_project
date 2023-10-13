@@ -1,11 +1,18 @@
 PythonApplication1/*
 .vscode
+.DS_Store
+
+test-model.zip
 
 
 logs/
 
 train/
 
+<<<<<<< HEAD
 train1-2-01/
 
 /*.zip
+=======
+
+>>>>>>> f17890218da5b1aacf3ea38f6cf93fc62c688ec1
