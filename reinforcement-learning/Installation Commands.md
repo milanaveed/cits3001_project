@@ -1,3 +1,6 @@
+# Python version
+`3.7.16`
+
 # Super Mario Bros
 `pip install gym_super_mario_bros==7.3.0 nes.py==8.1.8`
 

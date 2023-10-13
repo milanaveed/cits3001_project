@@ -1,5 +1,5 @@
 # #import the game
-import gym
+# import gym
 import gym_super_mario_bros
 import os
 import signal # Ignore keyboard interruption and prevent accidental quits
@@ -21,12 +21,12 @@ from matplotlib import pyplot as plt
 
 ####################################################################
 # Set up game environment and simplify actions
-env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
-# env = JoypadSpace(env, SIMPLE_MOVEMENT)
+env = gym_super_mario_bros.make("SuperMarioBros-1-2-v0")
+env = JoypadSpace(env, SIMPLE_MOVEMENT)
 # SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
 # sample the ['right'] and ['right', 'A'] actions
-MY_MOVEMENT = SIMPLE_MOVEMENT[1:3] 
-env = JoypadSpace(env, MY_MOVEMENT)
+# MY_MOVEMENT = SIMPLE_MOVEMENT[1:3] 
+# env = JoypadSpace(env, MY_MOVEMENT)
 print(env.observation_space.shape) # (240, 256, 3)
 # print(MY_MOVEMENT) # [['right'], ['right', 'A']]
 
@@ -38,8 +38,8 @@ env = GrayScaleObservation(env, keep_dim=True)
 print(env.observation_space.shape) # (240, 256, 1)
 
 # Resize observation
-env = ResizeObservation(env, shape=84)
-print(env.observation_space.shape) # (84, 84, 1)
+# env = ResizeObservation(env, shape=84)
+# print(env.observation_space.shape) # (84, 84, 1)
 
 
 # Create a vectorized wrapper for an environment
@@ -51,27 +51,6 @@ print(env.observation_space.shape) # (1, 84, 84, 4)
 
 # todo: can we resize the frame? see what it'll look like after resize
 # todo: can we skip some frames?
-
-###################################################################
-# Possible improvement
-###################################################################
-#      # 1. CREATE THE MARIO ENV
-#      mario_env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
-#      # 2. SIMPLIFY THE CONTROLS
-#      mario_env = JoypadSpace(mario_env, SIMPLE_MOVEMENT)
-#     # 3. SKIP FRAMES AND TAKE ACTION EVERY N FRAMES
-#     mario_env = SkipFrame(mario_env, skip=4)
-#     # 4. TRANSFORM OBSERVATIONS INTO GRAYSCALE
-#     mario_env = GrayScaleObservation(mario_env)
-#     # 5. RESIZE OBSERVATIONS TO REDUCE DIMENSIONALITY
-#     mario_env = ResizeObservation(mario_env, shape=84) 
-#     # 6. NORMALIZE OBSERVATIONS
-#     mario_env = TransformObservation(mario_env, f=lambda x: x / 255.)
-#     # 7. STACK N FRAMES TO INTRODUCE TEMPORAL ASPECT
-#     mario_env = FrameStack(mario_env, num_stack=4)
-
-#     return mario_env
-
 
 ###############################################################
 # Prevent accidental quits when training
@@ -105,37 +84,23 @@ class TrainAndSaveCallback(BaseCallback):
     def _on_step(self):
         if self.n_calls % self.check_freq == 0:
             model_path = os.path.join(
-                self.save_path, '1-1_model_{}'.format(self.n_calls))
+                self.save_path, '1-2_02model_{}'.format(self.n_calls))
             self.model.save(model_path)
 
         return True
 
 
-DATA_DIR = './reinforcement-learning/train/'
+DATA_DIR = './reinforcement-learning/train1-2-02/'
 LOG_DIR = './reinforcement-learning/logs/'
 
-callback = TrainAndSaveCallback(check_freq=500000, save_path=DATA_DIR)
+callback = TrainAndSaveCallback(check_freq=1000000, save_path=DATA_DIR)
 model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR,
-            learning_rate=0.000001, n_steps=512)
-model.learn(4000000, callback=callback)
+            learning_rate=0.00001, n_steps=512)
+model.learn(10000000, callback=callback)
 
-model.save('1-1-model')
+model.save('1-2-02model')
 
 # started the current training from 17:50 Sunday
-
-
-#####################################################################
-# Load the training result
-#####################################################################
-# model = PPO.load('./reinforcement-learning/train/best_model_40000')
-# state = env.reset()
-# while True:
-#     action, _ = model.predict(state)
-#     print(MY_MOVEMENT[action[0]])
-#     state, reward, done, info = env.step(action)
-#     env.render()
-
-
 
 
 #####################################################################
