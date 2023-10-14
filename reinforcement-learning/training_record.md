@@ -24,3 +24,10 @@ Above are from version 1.
 - 11:34PM 13/10
 - DATA_DIR = './reinforcement-learning/train1-2-02/'
 - model.save('1-2-02model')
+
+# 1-1 v3 
+- DATA_DIR = './reinforcement-learning/train1-1-v302/'
+- 3pm 14/10
+
+# 1-2 v3
+- DATA_DIR = './reinforcement-learning/train1-2-v3/'

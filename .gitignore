@@ -6,12 +6,18 @@ test-model.zip
 
 
 logs/
+logs1-2-02/
+logs1-1-v3/
+logs1-2-v3/
+logs1-1-v302/
 
 train/
-
 <<<<<<< HEAD
 train1-2-01/
 train1-2-02/
+train1-1-v3/
+train1-2-v3/
+train1-1-v302/
 /*.zip
 =======
 
