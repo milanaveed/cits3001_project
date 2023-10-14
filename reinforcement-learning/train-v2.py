@@ -101,6 +101,7 @@ class CustomRewardAndDoneEnv(gym.Wrapper):
 
 ############################################################################
 # Set up game environment
+############################################################################
 env = gym_super_mario_bros.make("SuperMarioBros-1-1-v3")
 
 # * Simplify actions -- Option 1: Use SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
@@ -170,7 +171,7 @@ TRAINING_TIME_LOG_PATH = DATA_DIR + 'training_time_log.csv'
 PASS_RATE_LOG_PATH = DATA_DIR + 'pass_rate_log.csv'
 
 # Set test parameters
-NUMBER_OF_TRIALS = 100
+NUMBER_OF_TRIALS = 30
 MAX_TIMESTEP_TEST = 1000
 
 # Add a header line into the csv log file
@@ -267,7 +268,7 @@ class TrainAndSaveCallback(BaseCallback):
                 if x_position[i] > best_x_position:
                     best_x_position = x_position[i]
 
-                state = env.reset()  # reset for each new trial
+                # state = env.reset()  # reset for each new trial
 
             print('time steps:', self.n_calls, '/', 10000000)
             print('average time:', np.mean(total_time))
@@ -289,7 +290,7 @@ class TrainAndSaveCallback(BaseCallback):
                 print(self.n_calls, ',', elapsed_time, file=f)
 
             with open(PASS_RATE_LOG_PATH, 'a') as f:
-                print(self.n_calls, ',', number_of_pass, file=f)
+                print(self.n_calls, ',', round(number_of_pass/NUMBER_OF_TRIALS*100), file=f)
 
         return True
 

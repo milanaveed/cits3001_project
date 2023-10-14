@@ -98,8 +98,7 @@ class CustomRewardAndDoneEnv(gym.Wrapper):
 
 ############################################################################
 # Set up game environment
-############################################################################
-env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
+env = gym_super_mario_bros.make("SuperMarioBros-1-2-v3")
 
 # * Simplify actions -- Option 1: Use SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
 # env = JoypadSpace(env, SIMPLE_MOVEMENT)
@@ -139,87 +138,90 @@ env = DummyVecEnv([lambda: env])
 env = VecFrameStack(env, 4, channels_order='last')
 print(env.observation_space.shape)  # (1, 84, 84, 4)
 
-###############################################################################
-# Add keyboard control and prevent accidental quits when training on Windows
-###############################################################################
-current_pid=os.getpid()
-print(current_pid)
-
-def SigIntHand(SIG, FRM):
-    print("Ctrl-C does not work on the cmd prompt.")
-    print("List the process id by `tasklist | findstr python`")
-    print("COMMAND THAT CAN KILL THE PROCESS:")
-    print(f"taskkill /PID {current_pid} /F")
-
-signal.signal(signal.SIGINT, SigIntHand)
-
-
-#####################################################################
-# Create a log file to save the performance metrics' data
-#####################################################################
-DIR = './reinforcement-learning/transfer-learning-1-1-v0/'
-os.makedirs(DIR, exist_ok=True)
-
-DISTANCE_LOG_PATH = DIR + 'x_position_log.csv'
-PASS_RATE_LOG_PATH = DIR + 'pass_rate_log.csv'
-
-# with open(DISTANCE_LOG_PATH, 'a') as f:  
-#     print('timesteps_of_model,average_distance,best_distance', file=f)
-
-# with open(PASS_RATE_LOG_PATH, 'a') as f:  
-#     print('timesteps_of_model,pass_rate(%)', file=f)
 
 
 #####################################################################
 # Load the training result
 #####################################################################
-# Set test parameters
-NUMBER_OF_TRIALS = 100
-MAX_ACTION_NUMBER = 500
+model = PPO.load('./reinforcement-learning/train1-2-v3/1-2_v3model_300000')
 
-
-def transfer_learning():
-    for time_steps_of_model in range(20000, 10000001, 20000):
-        model = PPO.load('./reinforcement-learning/train1-1-v302/1-1_v302model_{}'.format(time_steps_of_model))
-
-        x_position = [0] * NUMBER_OF_TRIALS
-        best_x_position = 0
-        number_of_pass = 0
-
-        for i in range(NUMBER_OF_TRIALS):
-            state = env.reset()  
-            done = False
-            while not done:
-                action, _ = model.predict(state)
-                # print(ONLY_THREE_MOVEMENT[action[0]])
-                state, reward, done, info = env.step(action)
-                x_position[i] = info[0]['x_pos']
-                # env.render()
-
-                if info[0]['flag_get']:
-                    number_of_pass += 1
-                    # print("########### WINNNNNNNNNNNNN! ###########")
-
-            if x_position[i] > best_x_position:
-                best_x_position = x_position[i]
-
-        print('####################################################')
-        print('time steps of current model:', time_steps_of_model, '/', 10000000)
-        print('average distance:', np.mean(x_position),
-                'best_distance:', best_x_position)
-        print('number_of_pass:', number_of_pass)
-        print('####################################################')
-
-
-        with open(DISTANCE_LOG_PATH, 'a') as f:
-                print(time_steps_of_model, ',', np.mean(x_position), ',', best_x_position, file=f)
-
-        with open(PASS_RATE_LOG_PATH, 'a') as f:
-                print(time_steps_of_model, ',', number_of_pass, file=f)
-
+def test():
+    done = True
+    number_of_attemps = 0
+    while number_of_attemps < 20:
+        if done:
+            state = env.reset()
+            number_of_attemps +=1   
+        action, _ = model.predict(state)
+        print(ONLY_THREE_MOVEMENT[action[0]])
+        state, reward, done, info = env.step(action)
+        env.render()
+        if info[0]['flag_get']:
+            print("########### WINNNNNNNNNNNNN! ###########")
+            print(info)
+            env.close()
+            return
     env.close()
-    
+    return
 
-transfer_learning()
+test()
 
 # shortcut for taking screenshots: windows + shift + S
+
+
+#####################################################################
+# Command for Tensorboard
+#####################################################################
+# cd into the log directory, `tensorboard --logdir=.`
+
+
+#####################################################################
+# Testing the game and show frames
+#####################################################################
+# state = env.reset()
+# state, reward, done, info = env.step([env.action_space.sample()])
+'''
+VS Code and the Python extension now has TensorBoard integrated in it in its latest release!
+
+To start a TensorBoard session from VSC:
+
+Open the command palette (Ctrl/Cmd + Shift + P)
+Search for the command “Python: Launch TensorBoard” and press enter.
+You will be able to select the folder where your TensorBoard log files are located. By default, the current working directory will be used.
+VSCode will then open a new tab with TensorBoard and its lifecycle will be managed by VS Code as well. This means that to kill the TensorBoard process all you have to do is close the TensorBoard tab.
+'''
+
+
+# def display_4_frames():
+#     plt.figure(figsize=(15, 12))
+#     for i in range(state.shape[3]):
+#         plt.subplot(1, 4, i+1)
+#         plt.imshow(state[0][:, :, i])
+#     plt.show()
+
+# display_4_frames()
+
+# print(env.step(1)[1])
+# print(state.shape)
+# plt.imshow(state[0])
+# plt.show()
+
+# print(env.observation_space.shape)
+
+# Create a flag - restart or not
+
+# done = True
+# # Loop through each frame in the game
+# for step in range(1000):
+#     # Start the game to begin with
+#     if done:
+#         # Start the game
+#         env.reset()
+#     # Do random actions
+#     action = env.action_space.sample()
+#     print(ONLY_THREE_MOVEMENT[action])
+#     state, reward, done, info = env.step(action)
+#     # Show the game on the screen
+#     env.render()
+# # Close the game
+# env.close()

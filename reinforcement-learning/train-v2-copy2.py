@@ -102,7 +102,7 @@ class CustomRewardAndDoneEnv(gym.Wrapper):
 ############################################################################
 # Set up game environment
 ############################################################################
-env = gym_super_mario_bros.make("SuperMarioBros-1-2-v3")
+env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
 
 # * Simplify actions -- Option 1: Use SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
 # env = JoypadSpace(env, SIMPLE_MOVEMENT)
@@ -162,9 +162,9 @@ signal.signal(signal.SIGINT, SigIntHand)
 # Train and save the training process
 ##############################################################################
 # Manage files and directories
-DATA_DIR = './reinforcement-learning/train1-2-v3/'
+DATA_DIR = './reinforcement-learning/train1-1-v0/'
 os.makedirs(DATA_DIR, exist_ok=True)
-LOG_DIR = './reinforcement-learning/logs1-2-v3/'
+LOG_DIR = './reinforcement-learning/logs1-1-v0/'
 # REWARD_LOG_PATH = DATA_DIR + 'reward_log.csv'
 DISTANCE_LOG_PATH = DATA_DIR + 'x_position_log.csv'
 TRAINING_TIME_LOG_PATH = DATA_DIR + 'training_time_log.csv'
@@ -238,7 +238,7 @@ class TrainAndSaveCallback(BaseCallback):
             elapsed_time = round((current_time - start_time) / 60)  # Get time difference in minutes
 
             model_path = os.path.join(
-                self.save_path, '1-2_v3model_{}'.format(self.n_calls))  # Saves the model
+                self.save_path, '1-1_v0model_{}'.format(self.n_calls))  # Saves the model
             self.model.save(model_path)
 
             # Test and save each milestone's average reward and best reward
@@ -299,12 +299,12 @@ class TrainAndSaveCallback(BaseCallback):
 
 
 
-callback = TrainAndSaveCallback(check_freq=50000, save_path=DATA_DIR)
+callback = TrainAndSaveCallback(check_freq=20000, save_path=DATA_DIR)
 model = PPO('CnnPolicy', env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log=LOG_DIR,
             learning_rate=0.0001, n_steps=512, batch_size=64, n_epochs=10, gamma=0.9, gae_lambda=1.0, ent_coef=0.01)
-model.learn(total_timesteps=10000000, callback=callback)
+model.learn(total_timesteps=12000000, callback=callback)
 
-model.save('1-2-v3model')
+model.save('1-1-v0model')
 
 # TODO: count time
 # TODO: set level and episode

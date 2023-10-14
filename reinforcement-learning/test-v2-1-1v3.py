@@ -98,7 +98,7 @@ class CustomRewardAndDoneEnv(gym.Wrapper):
 
 ############################################################################
 # Set up game environment
-env = gym_super_mario_bros.make("SuperMarioBros-1-2-v3")
+env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
 
 # * Simplify actions -- Option 1: Use SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
 # env = JoypadSpace(env, SIMPLE_MOVEMENT)
@@ -143,7 +143,7 @@ print(env.observation_space.shape)  # (1, 84, 84, 4)
 #####################################################################
 # Load the training result
 #####################################################################
-model = PPO.load('./reinforcement-learning/train1-2-v3/1-2_v3model_50000')
+model = PPO.load('./reinforcement-learning/train1-1-v302/1-1_v302model_1820000')
 
 def test():
     done = True
