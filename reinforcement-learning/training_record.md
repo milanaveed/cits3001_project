@@ -10,12 +10,17 @@ model.save('1-1-model')
 ```
 
 # 1-2 SIMPLE-MOVEMENT NO-RESIZED 0.000001
-DATA_DIR = './reinforcement-learning/train/'
-model.save('1-2-model')
+- DATA_DIR = './reinforcement-learning/train/'
+- model.save('1-2-model')
 
 # 1-2 SIMPLE-MOVEMENT NO-RESIZED 0.0001
-DATA_DIR = './reinforcement-learning/train1-2-01/'
-model.save('1-2-01model')
+- DATA_DIR = './reinforcement-learning/train1-2-01/'
+- model.save('1-2-01model')
 
+<BR/>
 Above are from version 1.
 
+# 1-2 THREE-MOVEMENT RESIZED SKIPPEDFRAME 0.0001 CUSTOMIZED REWARD
+- 11:34PM 13/10
+- DATA_DIR = './reinforcement-learning/train1-2-02/'
+- model.save('1-2-02model')
