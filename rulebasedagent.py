@@ -56,7 +56,7 @@ image_files = {
     "enemy": {
         "goomba": ["images/goomba.png"],
         "koopa": ["images/koopaA.png", "images/koopaB.png"],
-        #"fish": ["images/fishA.png", "images/fishB.png"],
+        # "fish": ["images/fishA.png", "images/fishB.png"],
         "plant": ["images/plantA.png", "images/plantB.png"],
     },
     "block": {
@@ -260,7 +260,7 @@ def locate_objects(screen, mario_status):
 ################################################################################
 # GETTING INFORMATION AND CHOOSING AN ACTION
 
-def make_action(screen, info, step, env, prev_action, counter, previous_jump):
+def make_action(screen, info, step, env, prev_action, counter, previous_jump, highest_x):
     mario_status = info["status"]
     object_locations = locate_objects(screen, mario_status)
 
@@ -360,31 +360,33 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
     #              action = 1 means press 'right' button
     #              action = 2 means press 'right' and 'A' buttons at the same time
     
+    #Boolean values to determine whether the agent should perform any of these types of jumps
     enemy_jump = False
     block_jump = False
     pit_jump = False
-    if(previous_jump == -1):
+    
+    #Attributes for previous_jump variable, each integer determining what type of jump Mario was previously doing
+    NO_JUMP = -1
+    IS_ENEMY_JUMP = 0
+    IS_BLOCK_JUMP = 1
+    IS_PIT_JUMP = 2
+    
+    #If the agent wasn't in the process of performing a jump prior to this step
+    if(previous_jump == NO_JUMP):
         if mario_locations:
             location, dimensions, object_name = mario_locations[0]
             mario_x, mario_y = location
             mario_width, mario_height = dimensions
-            #print(mario_width)
             
             #CHECKING IF WE NEED TO AVOID ENEMIES   
             for enemy in enemy_locations:
                 enemy_location, enemy_dimensions, enemy_name = enemy
                 enemy_x, enemy_y = enemy_location
                 enemy_width, enemy_height = enemy_dimensions
-                #time.sleep(1)
-                # print("Enemy x:", enemy_x)
-                # print("Mario x:", mario_x)
-                # print("mario_x + mario_width + 50:", mario_x + mario_width + 50)
-                # print("enemy_x - mario_x:", enemy_x - mario_x)
-                # print("===========================")
+                #if the enemy is on the same y-axis level and about within one block away from Mario, the agent will perform an enemy_jump
                 if enemy_x <= mario_x + mario_width + 16 and enemy_x - mario_x > -1 and enemy_y + enemy_height == mario_y + mario_height:
                     enemy_jump = True
-                    previous_jump = 0
-                    #print("Located Enemy")
+                    previous_jump = IS_ENEMY_JUMP
                     break
                     
             #CHECKING IF WE NEED TO JUMP OVER A BLOCK
@@ -393,28 +395,39 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
                 block_x, block_y = block_location
                 block_width, block_height = block_dimensions
                 
-                #if(block_name == 'pipe'):
-                #   print('Mario y:', mario_y)
-                #  print("Mario height:", mario_height)
-                # print("Mario base:", mario_y - mario_height)
-                    #print('Pipe y:', block_y)
-                    #print("Pipe height:", block_height)
-                    #print("Pipe base:", block_y - mario_height)
-                    #print("--------")
-                
-                if block_y <= mario_y and block_y + block_height + 1 == mario_y + mario_height and block_x - mario_x < 50 and block_x - mario_x > -1:
+                #Will perform block_jump if the block is within 50 pixels ahead of Mario and if the block is obstructing Mario, path
+                if block_y <= mario_y and block_y + block_height + 1 == mario_y + mario_height and block_x - mario_x < 50  and block_x - mario_x > -1:
+                    #If the block is a pipe, the agent will choose to perform a block_jump only if there is no Piranha Plant on the pipe
+                    if block_name == 'pipe':
+                        should_break = False
+                        for enemy in enemy_locations:
+                            enemy_location, enemy_dimensions, enemy_name = enemy
+                            enemy_x, enemy_y = enemy_location
+                            enemy_width, enemy_height = enemy_dimensions
+                            
+                            if(enemy_name == 'plant' and block_x + 8 == enemy_x):
+                                should_break = True
+                                break
+                        
+                        if(should_break):
+                            break       
                     block_jump = True
-                    previous_jump = 1
-                    #print("Located block tower")
+                    previous_jump = IS_BLOCK_JUMP
                     break
                 
             #CHECKING FOR PIT JUMP
             #We should find which block mario is on
             #We should then check if there is a block next to that
+            
+            #Determines the y coordinate of the block which Mario could be standing on
             mario_block_y = mario_y + mario_height - 1
+            
+            #Determines the x coordinate of the block which Mario could be standing on
             mario_block_x = 16*(mario_x//16)
+            
             block_below_mario = False
             
+            #Checks if there is a block below Mario
             for block in block_locations:
                 block_location, block_dimensions, block_name = block
                 block_x, block_y = block_location
@@ -422,125 +435,98 @@ def make_action(screen, info, step, env, prev_action, counter, previous_jump):
                 
                 if block_x == mario_block_x and block_y == mario_block_y:
                     block_below_mario = True
-                
-                if block_x == mario_block_x and block_y == mario_block_y and block_name == 'pipe':
-                    pit_jump = True
+                    break
             
+            #Set to True, will be changed to False if no block is found at the pit_block coordinates (where the pit should be)
             pit_next_to_mario = True
             pit_block_y = mario_block_y
             pit_block_x = mario_block_x + 32
-            #time.sleep(1)
+            
+            #If Mario is standing on a block, the Agent will check if there is a block 2 blocks ahead of the one he is standing on.
+            #If there is no block two blocks ahead, it means there is a pit (empty block), so the Agent will choose to jump over it.
             if block_below_mario:
                 for block in block_locations:
                     block_location, block_dimensions, block_name = block
                     block_x, block_y = block_location
                     block_width, block_height = block_dimensions
-                    
-                    # print("Mario x:",mario_x)
-                    # print("Mario Block:",mario_block_x,mario_block_y)
-                    # print("Pit Block:",pit_block_x,pit_block_y)
-                    # print("Current Block:",block_x,block_y)
-                    # print("----------------")
+                  
                     if (block_x == pit_block_x and block_y == pit_block_y):
-                        #time.sleep(1)
                         pit_next_to_mario = False
-                        #print(block_name)
                         break
-                    #print("STOP")
-                #time.sleep(0.01)
                         
                 if pit_next_to_mario:
-                    #time.sleep(5)
-                    # print("yesssssssssssssssssssssssssssssssssssssssssssss")
                     pit_jump = True
-                    previous_jump = 2
-                
+                    previous_jump = IS_PIT_JUMP
             
-                # for block in block_locations:
-                #     block_location, block_dimensions, block_name = block
-                #     block_x, block_y = block_location
-                #     block_width, block_height = block_dimensions
-                    
-                #     # print("Block y:", block_y)
-                #     # print("mario_y + mario_height:", mario_y + mario_height)
-                #     # print("Block x:", block_x)
-                #     # print("mario_x + mario_width:", mario_x + mario_width)
-                #     # print("------------")
-                    
-                #     if block_y == mario_y + mario_height - 1 and mario_x < block_x + block_width :
-                #         pit_jump = False
-                #         break
-            
-            # if pit_jump:
-            #     previous_jump = 2
-            #     print('Located Pit')
-            #time.sleep(1000000)     
-        
-    if ((enemy_jump and counter <= 12) or (prev_action == 4 and counter <= 12) or (prev_action == 0 and counter <= 12)) and (previous_jump == 0):
-        
+    #Used this to find the furthest distance the agent can reach in a level
+    mario_world_x = info["x_pos"]
+    if mario_world_x > highest_x:
+        highest_x = mario_world_x
+    
+    #If the agent is performing an enemy_jump, it will only do so for 8 steps as it only needs to be a brief jump to avoid an enemy ahead.
+    #If the agent is performing a block_jump or a pit_jump, it will do one for 17 steps, as both of these types of jumps require a full jump and 17 steps of holding the jump button is the closest we found to being a full jump.
+    if ((enemy_jump and counter <= 8) or (prev_action == 4 and counter <= 8) or (prev_action == 0 and counter <= 8)) and (previous_jump == 0):
         if(counter == 0):
             print("Enemy Jump 0")
             action = 4
             counter += 1
-            previous_jump = 0
-            return action, counter, previous_jump
-        elif(counter == 12):
+            previous_jump = IS_ENEMY_JUMP
+            return action, counter, previous_jump, highest_x
+        elif(counter == 8):
             print("Enemy Jump", counter)
             counter += 1
             action = 3
-            previous_jump = -1
-            return action, counter, previous_jump
+            previous_jump = NO_JUMP
+            return action, counter, previous_jump, highest_x
         else:
             print("Enemy Jump", counter)
             action = 4
             counter += 1
-            return action, counter, previous_jump
+            return action, counter, previous_jump, highest_x
     elif ((block_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17)) and (previous_jump == 1):
-        
         if(counter == 0):
             print("Block Jump 0")
             action = 4
             counter += 1
-            previous_jump = 1
-            return action, counter, previous_jump
+            previous_jump = IS_BLOCK_JUMP
+            return action, counter, previous_jump, highest_x
         elif(counter == 17):
             print("Block Jump", counter)
             counter += 1
             action = 3
-            previous_jump = -1
-            return action, counter, previous_jump
+            previous_jump = NO_JUMP
+            return action, counter, previous_jump, highest_x
         else:
             print("Block Jump", counter)
             action = 4
             counter += 1
-            return action, counter, previous_jump
-    elif ((pit_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17)) and (previous_jump == 2):
-        
+            return action, counter, previous_jump, highest_x
+    elif (((pit_jump and counter <= 17) or (prev_action == 4 and counter <= 17) or (prev_action == 0 and counter <= 17)) and (previous_jump == 2)):
         if(counter == 0):
             print("Pit Jump 0")
             action = 4
             counter += 1
-            previous_jump = 2
-            return action, counter, previous_jump
+            previous_jump = IS_PIT_JUMP
+            return action, counter, previous_jump, highest_x
         elif(counter == 17):
             print("Pit Jump", counter)
             counter += 1
             action = 3
-            previous_jump = -1
-            return action, counter, previous_jump
+            previous_jump = NO_JUMP
+            return action, counter, previous_jump, highest_x 
         else:
             print("Pit Jump", counter)
             action = 4
             counter += 1
-            return action, counter, previous_jump
+            return action, counter, previous_jump, highest_x
     else:
         action = 3
         counter = 0
-        previous_jump = -1
-        return action, counter, previous_jump
+        previous_jump = NO_JUMP
+        return action, counter, previous_jump, highest_x
 
 ################################################################################
-env = gym.make("SuperMarioBros-6-2-v0", apply_api_compatibility=True, render_mode="human")
+env = gym.make("SuperMarioBros-v0", apply_api_compatibility=True, render_mode="human")
 env = JoypadSpace(env, SIMPLE_MOVEMENT)
 
 obs = None
@@ -548,9 +534,10 @@ done = True
 env.reset()
 counter = 0
 previous_jump = -1
+highest_x = 0
 for step in range(100000):
     if obs is not None:
-        action, counter, previous_jump = make_action(obs, info, step, env, action, counter, previous_jump)
+        action, counter, previous_jump, highest_x = make_action(obs, info, step, env, action, counter, previous_jump, highest_x)
         #print(action)
     else:
         action = 3
