@@ -99,7 +99,7 @@ class CustomRewardAndDoneEnv(gym.Wrapper):
 ############################################################################
 # Set up game environment
 ############################################################################
-env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
+env = gym_super_mario_bros.make("SuperMarioBros-2-1-v0")
 
 # * Simplify actions -- Option 1: Use SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
 # env = JoypadSpace(env, SIMPLE_MOVEMENT)
@@ -157,17 +157,17 @@ signal.signal(signal.SIGINT, SigIntHand)
 #####################################################################
 # Create a log file to save the performance metrics' data
 #####################################################################
-DIR = './reinforcement-learning/transfer-learning-1-1-v0/'
+DIR = './reinforcement-learning/transfer-learning-2-1-v0-with-2-1-v3/'
 os.makedirs(DIR, exist_ok=True)
 
 DISTANCE_LOG_PATH = DIR + 'x_position_log.csv'
 PASS_RATE_LOG_PATH = DIR + 'pass_rate_log.csv'
 
-# with open(DISTANCE_LOG_PATH, 'a') as f:  
-#     print('timesteps_of_model,average_distance,best_distance', file=f)
+with open(DISTANCE_LOG_PATH, 'a') as f:  
+    print('timesteps_of_model,average_distance,best_distance', file=f)
 
-# with open(PASS_RATE_LOG_PATH, 'a') as f:  
-#     print('timesteps_of_model,pass_rate(%)', file=f)
+with open(PASS_RATE_LOG_PATH, 'a') as f:  
+    print('timesteps_of_model,pass_rate(%)', file=f)
 
 
 #####################################################################
@@ -179,8 +179,9 @@ MAX_ACTION_NUMBER = 500
 
 
 def transfer_learning():
-    for time_steps_of_model in range(20000, 10000001, 20000):
-        model = PPO.load('./reinforcement-learning/train1-1-v302/1-1_v302model_{}'.format(time_steps_of_model))
+    #! transfer learning可以接着训练，不用从头开始
+    for time_steps_of_model in range(3500000, 10000001, 20000):
+        model = PPO.load('./reinforcement-learning/train2-1-v3/2-1_v3model_{}'.format(time_steps_of_model))
 
         x_position = [0] * NUMBER_OF_TRIALS
         best_x_position = 0
@@ -198,7 +199,7 @@ def transfer_learning():
 
                 if info[0]['flag_get']:
                     number_of_pass += 1
-                    # print("########### WINNNNNNNNNNNNN! ###########")
+                    print("########### WINNNNNNNNNNNNN! ###########")
 
             if x_position[i] > best_x_position:
                 best_x_position = x_position[i]
@@ -215,7 +216,7 @@ def transfer_learning():
                 print(time_steps_of_model, ',', np.mean(x_position), ',', best_x_position, file=f)
 
         with open(PASS_RATE_LOG_PATH, 'a') as f:
-                print(time_steps_of_model, ',', number_of_pass, file=f)
+                print(time_steps_of_model, ',', round(number_of_pass/NUMBER_OF_TRIALS*100), file=f)
 
     env.close()
     

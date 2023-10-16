@@ -261,6 +261,7 @@ class TrainAndSaveCallback(BaseCallback):
 
                     if info[0]['flag_get']:
                         number_of_pass += 1
+                        print("########### WINNNNNNNNNNNNN! ###########")
 
                 # if total_reward[i] > best_reward:
                 #     best_reward = total_reward[i]

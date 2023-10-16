@@ -19,7 +19,7 @@ from matplotlib import pyplot as plt
 
 ####################################################################
 # Set up game environment and simplify actions
-env = gym_super_mario_bros.make("SuperMarioBros-1-1-v0")
+env = gym_super_mario_bros.make("SuperMarioBros-1-2-v0")
 # env = JoypadSpace(env, SIMPLE_MOVEMENT)
 # SIMPLE_MOVEMENT = [['NOOP'], ['right'], ['right', 'A'], ['right', 'B'], ['right', 'A', 'B'], ['A'], ['left']]
 # sample the ['right'] and ['right', 'A'] actions
@@ -36,7 +36,7 @@ env = GrayScaleObservation(env, keep_dim=True)
 print(env.observation_space.shape) # (240, 256, 1)
 
 # Resize observation
-env = ResizeObservation(env, shape=84)
+# env = ResizeObservation(env, shape=84)
 # print(env.observation_space.shape) # (84, 84, 1)
 
 
@@ -87,7 +87,7 @@ print(env.observation_space.shape) # (1, 84, 84, 4)
 #####################################################################
 # Load the training result
 #####################################################################
-model = PPO.load('./1-1-model')
+model = PPO.load('./1-2-model')
 state = env.reset()
 while True:
     action, _ = model.predict(state)
