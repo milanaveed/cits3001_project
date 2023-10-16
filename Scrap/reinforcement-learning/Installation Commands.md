@@ -2,7 +2,7 @@
 pip install gym==v0.21.0
 - stable-baselines3 doesn't support gym v0.26
 
-# Super Mario Bros
+# Super Mario Bros usually 7.4
 pip install gym_super_mario_bros==v7.3.0
 
 # PyTorch
@@ -17,7 +17,7 @@ conda install pytorch::pytorch torchvision torchaudio -c pytorch
 - pip install torch==1.10.1+cu113 torchvision==0.11.2+cu113 torchaudio===0.10.1+cu113 -f
 
 # Stable Baselines
-pip install stable-baselines3==1.16.0
+pip install stable-baselines3==1.5.0
 
 - stable-baselines3 V2 doesn't support gym 
 - stable-baselines3 V1.x doesn't support gym v0.26
