@@ -3,8 +3,6 @@ PythonApplication1/*
 .DS_Store
 *.dat
 
-test-model.zip
-
 
 logs/
 logs1-2-02/
@@ -25,11 +23,8 @@ train2-1-v3/
 train1-1-v0/
 train1-2-v3/
 train1-1-v302/
-/*.zip
 =======
 
 >>>>>>> f17890218da5b1aacf3ea38f6cf93fc62c688ec1
 
-
-*.zip
 *.png
