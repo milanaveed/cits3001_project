@@ -17,7 +17,7 @@ Note: This Agent was setup on Windows 10, using Anaconda for virtual environment
 -   `pip install nes-py`
 -   `pip3 install gym-super-mario-bros`
 
-## List of packages
+## List of Packages
 
 In case something went wrong, here is a list of packages used by the environemnt we set up. (Found by running command `conda list`):
 
@@ -52,7 +52,7 @@ zipp                      3.15.0                   pypi_0    pypi
 
 # Environment Setup for Reinforcement Learning Agent
 
-## Python version
+## Python Version
 
 `3.7.16`
 
@@ -70,7 +70,7 @@ zipp                      3.15.0                   pypi_0    pypi
 
 -   stable-baselines3 doesn't support gym v0.26
 
-## Trouble shooting
+## Troubleshooting
 
 -   'EntryPoints' object has no attribute 'get' (https://github.com/InceptioResearch/itac/issues/1)
     `pip install importlib-metadata==4.0`
